@@ -113,18 +113,51 @@ def jacobi(mat_a: list, b: list, epsilon=10**-9) -> (list, int):
     vec_x = [[0] for _ in range(n)]
 
     while norm(residuum(mat_a, b, vec_x)) > epsilon:
+        new_vec_x = [[0] for _ in range(n)]
         iters += 1
         for i in range(0, n):
             sig = sum([0 if i == j else vec_x[j][0]*mat_a[i][j] for j in range(n)])
-            vec_x[i][0] = (b[i][0] - sig)/mat_a[i][i]
+            new_vec_x[i][0] = (b[i][0] - sig)/mat_a[i][i]
+        for i in range(len(vec_x)):
+            vec_x[i][0] = new_vec_x[i][0]
 
     return vec_x, iters
 
 
 def gauss_seidel(mat_a: list, b:list, epsilon=10**-9) -> (list, int):
-    pass
+    iters = 0
+    n = len(mat_a)
+    vec_x = [[0] for _ in range(n)]
+
+    while norm(residuum(mat_a, b, vec_x)) > epsilon:
+        new_vec_x = [[0] for _ in range(n)]
+        iters += 1
+        for i in range(0, n):
+            sig1 = sum([mat_a[i][j] * new_vec_x[j][0] for j in range(0, i)])
+            sig2 = sum([mat_a[i][j] * vec_x[j][0] for j in range(i+1, n)])
+            new_vec_x[i][0] = (b[i][0] - sig1 - sig2)/mat_a[i][i]
+        for i in range(len(vec_x)):
+            vec_x[i][0] = new_vec_x[i][0]
+
+    return vec_x, iters
 
 
-m_a, vec_b = construct()
+def zb():
+    import time
+    m_a, vec_b = construct()
 
+    j_t0 = time.time()
+    j_x, j_iters = jacobi(m_a, vec_b)
+    j_t = time.time() - j_t0
+
+    gs_t0 = time.time()
+    gs_x, gs_iters = gauss_seidel(m_a, vec_b)
+    gs_t = time.time() - gs_t0
+
+    print(f"Jacobi: iters={j_iters} residuum={norm(residuum(m_a, vec_b, j_x))} t={j_t}")
+    print(f"Gauss-Seidel: iters={gs_iters} residuum={norm(residuum(m_a, vec_b, gs_x))} t={gs_t}")
+
+
+
+zb()
 

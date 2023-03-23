@@ -81,14 +81,66 @@ następnie iterujemy poniższe przybliżenie
 \boldsymbol{L} + \boldsymbol{U})\boldsymbol{x}^{(k)})
 \end{gather*}
 do momentu uzyskania żądanej dokładności.
+\subsection*{Metoda Gaussa-Seidla}
+Jest to metoda bazująca na metodzie Jacobiego, też rozbijamy macierz $\boldsymbol{A}$ na 
+$\boldsymbol{D}, \boldsymbol{L}, \boldsymbol{U}$. Zmienia się postać iteracji
+\begin{gather*}
+	\boldsymbol{x}^{(0)} = \vec{0} \\
+	\boldsymbol{x}^{(k+1)} = (\boldsymbol{D} + \boldsymbol{L})^{-1}
+(\boldsymbol{b} - \boldsymbol{U}\boldsymbol{x}^{(k)})
+\end{gather*}
 
+\subsection*{Norma residuum}
+Do oceny ilościowej dokładności metod iteracyjnych liczy się normę wektora residuum.
+Wektor residuum
+\begin{gather*}
+	\boldsymbol{res} = \boldsymbol{A}\boldsymbol{x} - \boldsymbol{b}
+\end{gather*}
+W projekcie wykorzystano zwykłą normę euklidesową
+\begin{gather*}
+	||\boldsymbol{x}|| = \sqrt{\Sigma_{x \in \boldsymbol{x}} x^2}
+\end{gather*}
 \section{Analiza}
 \subsection{Tworzenie testowego układu równań}
-
+W testowanym układzie równań
+\begin{gather*}
+	\boldsymbol{A} = \begin{pmatrix}
+		a_1 & a_2 & a_3 & 0 & 0 & ...  & 0\\
+		a_2 & a_1 & a_2 & a_3 & 0 & ...  & 0\\
+		a_3 & a_2 & a_1 & a_2 & a_3 & ...  & 0\\
+		...     & ...     &  ...    & ...     & ...     & ...  & ...\\
+		0 & 0 & 0 & 0 & 0 & ...  & a_1\\
+	\end{pmatrix} \\\\
+	\boldsymbol{b} = \begin{pmatrix}
+		sin(8 \cdot 1) \\
+		sin(8 \cdot 2) \\
+		... \\
+		sin(8 \cdot n)
+	\end{pmatrix}
+\end{gather*}
+gdzie $a_1=11, a_2 = a_3 = -1$ (nr indeksu 188697).
+Dla tak dobranych parametrów macierz $\boldsymbol{A}$ jest przekątniowo dominująca
+co gwarantuje zbieganie się algorytmów iteracyjnych (\textbf{kryterium silnej dominacji w wierszach}).
+\subsection{Działanie metody Jacobiego i Gaussa-Seidla}
+\begin{center}
+\begin{tabular}{ c | c c c}
+ metoda & czas [ms] & iteracje & $norm(res)$ \\ 
+\hline
+ Jacobiego & 2947 & 17 & $6,83 \cdot 10^{-10}$\\  
+ Gaussa-Seidla & 2034 & 13 & $4,17 \cdot 10^{-10} $  
+\end{tabular}
+\end{center}
+Warto zauważyć, że metoda Gaussa-Seidla zbiega się w tym przypadku w mniejszej ilości iteracji
+i osiąga lepszy czas.
+\subsection{Niezbieganie się metod iteracyjnych dla zmienionego układu równań}
+\subsection{Działanie faktoryzacji LU dla zmienionego układu równań}
+\subsection{Zależności działania metod od czasu}
 \section{Podsumowanie}
 \section{Źródła}
 \begin{itemize}
 	\item \href{https://en.wikipedia.org/wiki/Jacobi_method}{Wikipedia-Jacobi}
+	\item \href{https://pl.wikipedia.org/wiki/Macierz_przek%C4%85tniowo_dominuj%C4%85ca}{Macierz-
+przekatniowo-dominujaca}
 \end{itemize}
 
 
