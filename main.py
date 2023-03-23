@@ -1,6 +1,10 @@
+import matplotlib
 import math
+import matplotlib.pyplot as plt
 
 from copy import deepcopy
+
+matplotlib.use("MacOSX")
 
 f = 8
 e = 6
@@ -111,9 +115,11 @@ def jacobi(mat_a: list, b: list, epsilon=10**-9) -> (list, int):
     iters = 0
     n = len(mat_a)
     vec_x = [[0] for _ in range(n)]
+    norms = []
 
-    while norm(residuum(mat_a, b, vec_x)) > epsilon:
+    while norm(residuum(mat_a, b, vec_x)) > epsilon and iters < 50:
         new_vec_x = [[0] for _ in range(n)]
+        norms.append(norm(residuum(mat_a, b, vec_x)))
         iters += 1
         for i in range(0, n):
             sig = sum([0 if i == j else vec_x[j][0]*mat_a[i][j] for j in range(n)])
@@ -121,16 +127,18 @@ def jacobi(mat_a: list, b: list, epsilon=10**-9) -> (list, int):
         for i in range(len(vec_x)):
             vec_x[i][0] = new_vec_x[i][0]
 
-    return vec_x, iters
+    return vec_x, iters, norms
 
 
 def gauss_seidel(mat_a: list, b:list, epsilon=10**-9) -> (list, int):
     iters = 0
     n = len(mat_a)
     vec_x = [[0] for _ in range(n)]
+    norms = []
 
-    while norm(residuum(mat_a, b, vec_x)) > epsilon:
+    while norm(residuum(mat_a, b, vec_x)) > epsilon and iters < 50:
         new_vec_x = [[0] for _ in range(n)]
+        norms.append(norm(residuum(mat_a, b, vec_x)))
         iters += 1
         for i in range(0, n):
             sig1 = sum([mat_a[i][j] * new_vec_x[j][0] for j in range(0, i)])
@@ -139,7 +147,7 @@ def gauss_seidel(mat_a: list, b:list, epsilon=10**-9) -> (list, int):
         for i in range(len(vec_x)):
             vec_x[i][0] = new_vec_x[i][0]
 
-    return vec_x, iters
+    return vec_x, iters, norms
 
 
 def zb():
@@ -147,17 +155,39 @@ def zb():
     m_a, vec_b = construct()
 
     j_t0 = time.time()
-    j_x, j_iters = jacobi(m_a, vec_b)
+    j_x, j_iters, _ = jacobi(m_a, vec_b)
     j_t = time.time() - j_t0
 
     gs_t0 = time.time()
-    gs_x, gs_iters = gauss_seidel(m_a, vec_b)
+    gs_x, gs_iters, _ = gauss_seidel(m_a, vec_b)
     gs_t = time.time() - gs_t0
 
     print(f"Jacobi: iters={j_iters} residuum={norm(residuum(m_a, vec_b, j_x))} t={j_t}")
     print(f"Gauss-Seidel: iters={gs_iters} residuum={norm(residuum(m_a, vec_b, gs_x))} t={gs_t}")
 
 
+def zc():
+    m_a, vec_b = construct()
+    for i in range(len(m_a)):
+        m_a[i][i] = 3
 
-zb()
+    fig, axis = plt.subplots(2)
+
+    j_x, j_iters, j_norms = jacobi(m_a, vec_b)
+    gs_x, gs_iters, gs_norms = gauss_seidel(m_a, vec_b)
+
+    axis[0].plot([i for i in range(len(j_norms))], j_norms)
+    axis[0].set_yscale("log")
+    axis[0].set_title("Metoda Jacobiego")
+    axis[0].set_ylabel("norm(res)")
+    axis[0].set_xlabel("ilość iteracji")
+    axis[1].plot([i for i in range(len(gs_norms))], gs_norms)
+    axis[1].set_yscale("log")
+    axis[1].set_title("Metoda Gaussa-Seidla")
+    axis[1].set_ylabel("norm(res)")
+    axis[1].set_xlabel("ilość iteracji")
+    plt.show()
+
+
+zc()
 
