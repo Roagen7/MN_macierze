@@ -1,0 +1,98 @@
+\documentclass{article}
+
+\title{Układy równań liniowych}
+\author{Dominik Lau}
+
+\usepackage{blindtext}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{esvect}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\renewcommand\thesubsection{\Alph{subsection}}
+
+\begin{document}
+\maketitle
+\section{Wstęp}
+Celem projektu była implementacja i przeanalizowanie metod rozwiązywania układów równań liniowych
+\begin{gather*}
+	\boldsymbol{A}\boldsymbol{x} = \boldsymbol{b}
+\end{gather*}
+Rozważane metody to metoda faktoryzacji LU, metoda Jacobiego i metoda Gaussa-Seidla.  
+Do implementacji wykorzystano język Python oraz bibliotekę matplotlib.
+\section{Teoria}
+\subsection*{Metoda faktoryzacji LU}
+Jest to metoda bezpośredniego rozwiązywania układu równań.  Pierw rozbijamy macierz $\textbf{A}$
+na dwie macierze trójkątne: dolną $\textbf{L}$ i górną $\textbf{U}$
+\begin{gather*}
+	\boldsymbol{A} = \boldsymbol{L}\boldsymbol{U}
+\end{gather*}
+następnie rozwiązujemy dwa układy równań dla macierzy trójkątnych
+\begin{gather*}
+	\boldsymbol{A}\boldsymbol{x} = \boldsymbol{b}\\
+	 \boldsymbol{L} \boldsymbol{U}  \boldsymbol{x} =  \boldsymbol{b} \\
+	 \boldsymbol{Ux} =  \boldsymbol{y}  \\\\
+	 \boldsymbol{L}  \boldsymbol{y} =   \boldsymbol{b}
+\end{gather*}
+powyższe równanie rozwiązujemy dla $ \boldsymbol{y}$, następnie rozwiązujemy dla $\boldsymbol{x}$
+korzystając z zależności
+\begin{gather*}
+	\boldsymbol{Ux} =  \boldsymbol{y}  \\\\
+\end{gather*}
+\subsection*{Metoda Jacobiego}
+Jest to metoda iteracyjnego rozwiązywania układu równań. Pierw rozbijamy $\boldsymbol{A}$
+na macierz $\boldsymbol{D}$ (diagonalną), $\boldsymbol{L}$ (trójkątną dolną) oraz $\boldsymbol{U}$ 
+(trójkątną górną).
+\begin{gather*}
+	\boldsymbol{A} = \boldsymbol{D} + \boldsymbol{L} + \boldsymbol{U}
+\end{gather*}
+następnie iterujemy poniższe przybliżenie
+\begin{gather*}
+	\boldsymbol{x}^{(0)} = \vec{0} \\
+	\boldsymbol{x}^{(k+1)} = \boldsymbol{D}^{-1}(\boldsymbol{b} - (
+\boldsymbol{L} + \boldsymbol{U})\boldsymbol{x}^{(k)})
+\end{gather*}
+do momentu uzyskania żądanej dokładności.
+
+\section{Analiza}
+\subsection{Tworzenie testowego układu równań}
+
+\section{Podsumowanie}
+\section{Źródła}
+\begin{itemize}
+	\item \href{https://en.wikipedia.org/wiki/Jacobi_method}{Wikipedia-Jacobi}
+\end{itemize}
+
+
+
+\end{document}
+
+
